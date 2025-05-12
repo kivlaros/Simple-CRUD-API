@@ -1,6 +1,6 @@
 import path from 'path';
 import nodeExternals from 'webpack-node-externals';
-import Dotenv from 'dotenv-webpack';
+import webpack from 'webpack';
 import { fileURLToPath } from 'url';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
@@ -15,15 +15,23 @@ export default {
   entry: {
     app: './server.ts',
   },
-  target: 'node',
-  externals: [nodeExternals()],
+  target: 'node18',
+  experiments: {
+    outputModule: true
+  },
+  externalsPresets: { node: true }, // Для Node.js
+  externals: [
+    nodeExternals({
+      modulesFromFile: true // Автоматически определять внешние зависимости
+    })
+  ],
   mode: process.env.NODE_ENV || 'development',
   module: {
     rules: [
       {
         test: /\.ts$/,
         loader: 'ts-loader',
-      }, // загрузчик для обработки файлов с расширением .ts
+      },
     ],
   },
   resolve: {
@@ -33,8 +41,14 @@ export default {
     },
   },
   output: {
+    module: true,
+    chunkFormat: 'module',
     path: paths.dist,
     filename: '[name].bundle.js',
   },
-  plugins: [new Dotenv()],
+  plugins: [
+    new webpack.DefinePlugin({
+      'process.env.NODE_ENV': JSON.stringify(process.env.NODE_ENV)
+    })
+  ]
 };

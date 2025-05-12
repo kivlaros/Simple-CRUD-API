@@ -2,12 +2,12 @@
   "name": "simple-crud-api",
   "version": "1.0.0",
   "description": "",
-  "main": "index.js",
+  "main": "server.js",
   "type": "module",
   "scripts": {
     "start:dev": "cross-env NODE_ENV=development nodemon -I --exec node --experimental-specifier-resolution=node  --loader ts-node/esm ./src/server.ts",
     "build": "cross-env NODE_ENV=production webpack --config webpack.config.js",
-    "start:prod": "cross-env NODE_ENV=production node dist/bundle.js",
+    "start:prod": "node --experimental-vm-modules ./dist/app.bundle.js",
     "lint": "eslint . --ext .ts,.tsx --fix",
     "format": "prettier --write .",
     "test": "cross-env NODE_ENV=test jest --coverage"
